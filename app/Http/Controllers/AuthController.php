@@ -8,6 +8,7 @@ use App\Models\User;
 
 class AuthController extends Controller
 {
+    // Función para iniciar sesión y generar token
     public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');
@@ -18,12 +19,14 @@ class AuthController extends Controller
         $token = $user->createToken('AppToken')->plainTextToken;
         return response()->json(['token' => $token, 'user' => $user]);
     }
-    
+
+    // Función para obtener el perfil del usuario autenticado
     public function perfil(Request $request)
     {
         return response()->json($request->user());
     }
 
+    // Función para registrar un nuevo usuario
     public function register(Request $request)
     {
         $validated = $request->validate([
@@ -46,14 +49,22 @@ class AuthController extends Controller
         ], 201);
     }
 
+    // Función para actualizar los datos del usuario autenticado
     public function update(Request $request)
     {
         $user = Auth::user();
 
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $user->id,
+            'name' => 'string|max:255',
+            'email' => 'email|unique:users,email,' . $user->id,
+            'password' => 'nullable|string|min:6|confirmed',
         ]);
+
+        if (isset($validated['password'])) {
+            $validated['password'] = bcrypt($validated['password']);
+        } else {
+            unset($validated['password']);
+        }
 
         $user->update($validated);
 
@@ -63,6 +74,7 @@ class AuthController extends Controller
         ]);
     }
 
+    // Función para listar todos los usuarios (solo para uso administrativo)
     public function verUsuarios()
     {
         $usuarios = User::all();
