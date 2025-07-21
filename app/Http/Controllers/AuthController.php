@@ -20,12 +20,6 @@ class AuthController extends Controller
         return response()->json(['token' => $token, 'user' => $user]);
     }
 
-    // Función para obtener el perfil del usuario autenticado
-    public function perfil(Request $request)
-    {
-        return response()->json($request->user());
-    }
-
     // Función para registrar un nuevo usuario
     public function register(Request $request)
     {
@@ -39,6 +33,7 @@ class AuthController extends Controller
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => bcrypt($validated['password']),
+            'roles_id' => 3,
         ]);
 
         return response()->json([
@@ -46,6 +41,12 @@ class AuthController extends Controller
         ], 201);
     }
 
+    // Función para obtener el perfil del usuario autenticado
+    public function perfil(Request $request)
+    {
+        return response()->json($request->user());
+    }
+    
     // Función para actualizar los datos del usuario autenticado
     public function update(Request $request)
     {
@@ -76,5 +77,13 @@ class AuthController extends Controller
     {
         $usuarios = User::all();
         return response()->json($usuarios);
+    }
+
+    //Eliminar un usuario 
+    public function destroy($id)
+    {
+        $user = User::findOrFail($id);
+        $user->delete();
+        return response()->json(['message' => 'Usuario eliminado correctamente']);
     }
 }
