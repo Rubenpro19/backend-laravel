@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PersonaController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\TurnoController;
 use App\Http\Controllers\UserController;
 
 Route::post('/login', [AuthController::class, 'login']); //usada en el front
@@ -27,4 +28,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/personas/{id}', [PersonaController::class, 'show']);
     Route::put('/personas/{id}', [PersonaController::class, 'update']);
     Route::delete('/personas/{id}', [PersonaController::class, 'destroy']);
+
+    Route::post('/nutricionista/turnos/generar', [TurnoController::class, 'generarTurnos']);
+    Route::get('/nutricionista/turnos/fecha', [TurnoController::class, 'obtenerTurnosPorFecha']);
+    Route::get('/nutricionista/turnos', [TurnoController::class, 'listarTodosLosTurnos']);
 });

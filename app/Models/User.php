@@ -25,8 +25,21 @@ class User extends Authenticatable
         'roles_id',
     ];
 
-    public function roles(){
+    public function roles()
+    {
         return $this->belongsTo(Role::class, 'roles_id');
+    }
+
+    // Turnos que el usuario creó como nutricionista
+    public function turnosNutricionista()
+    {
+        return $this->hasMany(Turno::class, 'nutricionista_id');
+    }
+
+    // Turnos que el usuario ha reservado como paciente
+    public function turnosPaciente()
+    {
+        return $this->hasMany(Turno::class, 'paciente_id');
     }
 
     /**
